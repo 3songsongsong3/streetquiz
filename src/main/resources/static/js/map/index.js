@@ -37,7 +37,10 @@ function initialize() {
        // 정답 맞추기
        if(confirm("결과 확인하기")) {
             addMarker(panorama.getPosition(), map, 'blue');
-            alert("ㅎㅎㅎ");
+            console.log(markers);
+            calculateDistance(markers[markers.length - 2 ]);
+            // 두 점 사이의 직선 그리기
+            drawPolyline(markers);
        } else {
             alert("fff");
        }
@@ -122,7 +125,56 @@ function clearMarkers() {
     }
 }
 
-// 결과 확인하기
-function getResult() {
+// 결과 확인하기 (하버사인 공식 활용)
+function calculateDistance(marker) {
+    let lat1 = panorama.getPosition()['lat']();
+    let lon1 = panorama.getPosition()['lng']();
 
+    let lat2 = marker.getPosition()['lat']();
+    let lon2 = marker.getPosition()['lng']();
+
+    const R = 6371e3; // 지구의 반지름 (meter)
+
+    // 좌표를 라디안 단위로 변환
+    const lat1CalVal = lat1 * Math.PI / 180;
+    const lat2CalVal = lat2 * Math.PI / 180;
+    const latDiff = (lat2 - lat1) * Math.PI / 180;
+    const lonDiff = (lon2 - lon1) * Math.PI / 180;
+
+    const a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
+    		  Math.cos(lat1CalVal) * Math.cos(lat2CalVal) *
+              Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c; // meter
+
+    // 거리를 킬로미터 또는 미터로 변환하여 보여줌
+    let distanceText;
+    if (distance >= 1000) {
+        distanceText = (distance / 1000).toFixed(2) + ' km';
+    } else {
+        distanceText = distance.toFixed(2) + ' m';
+    }
+
+    console.log('두 지점 간의 거리:', distanceText);
+    return distanceText;
+}
+
+// 두 좌표 사이에 직선 그리기
+function drawPolyline(markers) {
+
+    var lineCoordinates = [
+        markers[markers.length - 1].getPosition(),
+        markers[markers.length - 2].getPosition()
+    ];
+
+    var polyline = new google.maps.Polyline({
+        path: lineCoordinates,
+        geodesic: true,
+        strokeColor: '#FF0000', // Line color (red in this case)
+        strokeOpacity: 1.0,
+        strokeWeight: 2 // Line thickness
+    });
+
+    polyline.setMap(map);l
 }
