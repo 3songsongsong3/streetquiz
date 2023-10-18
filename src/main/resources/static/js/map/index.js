@@ -1,6 +1,7 @@
 let map;
 let panorama;
 let markers = [];
+var polyline;
 
 function initialize() {
   /*  // 대한민국의 위도 범위 (33.0 ~ 38.6)
@@ -160,21 +161,35 @@ function calculateDistance(marker) {
     return distanceText;
 }
 
-// 두 좌표 사이에 직선 그리기
+// 두 좌표 사이에 직선 그리기 (점선)
 function drawPolyline(markers) {
+    if (typeof polyline != 'undefined') {
+        polyline.setMap(null);
+    }
 
     var lineCoordinates = [
         markers[markers.length - 1].getPosition(),
         markers[markers.length - 2].getPosition()
     ];
 
-    var polyline = new google.maps.Polyline({
+    var lineSymbol = {
+      path: 'M 0,-1 0,1',
+      strokeOpacity: 1,
+      scale: 4
+    };
+
+    polyline = new google.maps.Polyline({
         path: lineCoordinates,
         geodesic: true,
-        strokeColor: '#FF0000', // Line color (red in this case)
-        strokeOpacity: 1.0,
-        strokeWeight: 2 // Line thickness
+        strokeOpacity: 0,
+        // icons 속성을 사용하여 뚜렷한 점선 스타일을 설정합니다.
+        icons: [{
+            icon: lineSymbol,
+            offset: '0',
+            repeat: '20px'
+        }],
+        map: map
     });
 
-    polyline.setMap(map);l
+    polyline.setMap(map);
 }
