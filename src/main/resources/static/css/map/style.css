@@ -24,4 +24,14 @@ body {
     width: 30%; /* Set the desired width of the map */
     height: 40%; /* Set the desired height of the map */
     z-index: 1000;
+    transition: width 1.2s ease, height 1.2s ease; /* Add a transition effect for width and height changes */
+}
+
+#map:hover {
+    position: absolute;
+    bottom: 10px; /* Adjust the bottom position as needed */
+    right: 10px; /* Adjust the right position as needed */
+    width: 60%; /* Set the desired width of the map on hover */
+    height: 70%; /* Set the desired height of the map on hover */
+    z-index: 1000;
 }

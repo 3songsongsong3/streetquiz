@@ -17,6 +17,7 @@ function initialize() {
         zoom: 10,
     });
 
+
     panorama = new google.maps.StreetViewPanorama(
         document.getElementById("pano"),
         {
@@ -27,8 +28,9 @@ function initialize() {
             },
         }
     );
-    setRandomPosition();
-   // map.setStreetView(panorama);
+   setRandomPosition();
+   setMapSaturation(-200)
+
    // 클릭한 위치에 마커를 추가하는 이벤트 리스너 등록
    google.maps.event.addListener(map, 'click', function(event) {
        if(markers.length > 0) {
@@ -46,10 +48,16 @@ function initialize() {
             alert("fff");
        }
    });
+   google.maps.event.addListener(map, 'mouseover', function(event) {
+        setMapSaturation(0)
+   });
+   google.maps.event.addListener(map, 'mouseout', function(event) {
+        setMapSaturation(-200)
+   });
 }
 
 window.initialize = initialize;
-
+window.setMapSaturation = setMapSaturation;
 
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -193,3 +201,18 @@ function drawPolyline(markers) {
 
     polyline.setMap(map);
 }
+
+// 지도 투명도 조절
+function setMapSaturation(opacity) {
+    // 스타일을 정의합니다.
+    var mapStyle = [
+        {
+            stylers: [
+                { saturation: opacity } // 채도를 조정하여 흑백 지도처럼 만듭니다.
+            ]
+        }
+    ];
+    // 스타일을 적용합니다.
+    map.setOptions({ styles: mapStyle });
+}
+
